@@ -6,8 +6,8 @@ This is the backend API for the Chat Application
 git clone https://github.com/damiisdandy/dubbz-chat-api dubbz-chat-api
 cd dubbz-chat-api
 
-# Creating and starting virtual environment
-# you can use different ways of starting up virtual environment but I recommend pipenv
+# Creating/starting virtual environment
+# you can use different ways to start up a virtual environment but I recommend pipenv
 # https://pipenv.pypa.io/en/latest/
 pipenv shell
 
@@ -24,4 +24,4 @@ python manage.py test
 ```
 
 > Note: The delete functionality works with API keys, to get your API key, run a GET request to `http://localhost:8000/api/message/api-key/generate` this is done for testing purposes, you can use the api_key gotten as a token to perform delete functionality.
-> The token is passed a Header `X-Api-Key`: <api_key> 
+> The token is passed as a Header `X-Api-Key`: <api_key> or as an input for the frontend application
