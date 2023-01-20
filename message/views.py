@@ -1,8 +1,11 @@
 from message.serializers import MessageSerializer
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from message.models import Message
+from django.shortcuts import get_object_or_404
+from rest_framework_api_key.permissions import HasAPIKey
+from rest_framework_api_key.models import APIKey
 
 
 @api_view(['POST'])
@@ -19,14 +22,14 @@ def create(request):
         "status": False,
         "message": "Problem creating message",
         "data": None,
-        "cause": serializer.error_messages
+        "cause": serializer.errors
     })
 
 
 @api_view(['GET'])
 def get_messages(request):
     try:
-        messages = Message.objects.all()
+        messages = Message.objects.all().order_by("-created_at")
         return Response({
             "status": True,
             "message": "Fetched all messages",
@@ -38,3 +41,41 @@ def get_messages(request):
             "message": "Problem fetching messages",
             "data": None
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['DELETE'])
+@permission_classes([HasAPIKey])
+def delete_message(request, message_id):
+    message = get_object_or_404(Message, id=message_id)
+    message.delete()
+    return Response({
+        "status": True,
+        "message": "Message deleted",
+        "data": MessageSerializer(message).data
+    }, status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['DELETE'])
+@permission_classes([HasAPIKey])
+def delete_all(request):
+    Message.objects.all().delete()
+    return Response({
+        "status": True,
+        "message": "All Messages deleted",
+        "data": None
+    }, status=status.HTTP_204_NO_CONTENT)
+
+
+# exposed publically for testing purposes#
+# for a real life scenario this will be backed by authentication
+# to attach API key to user, or for only `is_admin` to have the ablility to generate
+@api_view(['GET'])
+def generate_api_key(request):
+    _, key = APIKey.objects.create_key(name="custom API Key")
+    return Response({
+        "status": True,
+        "message": "Api Key Generated",
+        "data": {
+            "api_key": key,
+        }
+    }, status=status.HTTP_200_OK)

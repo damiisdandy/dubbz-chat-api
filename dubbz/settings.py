@@ -39,11 +39,14 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # mine
-    'message',
+    "message",
     # installed
-    'rest_framework',
-    'corsheaders'
+    "rest_framework",
+    "corsheaders",
+    "rest_framework_api_key"
 ]
+
+API_KEY_CUSTOM_HEADER = "HTTP_X_API_KEY"
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
