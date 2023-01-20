@@ -46,24 +46,38 @@ def get_messages(request):
 @api_view(['DELETE'])
 @permission_classes([HasAPIKey])
 def delete_message(request, message_id):
-    message = get_object_or_404(Message, id=message_id)
-    message.delete()
-    return Response({
-        "status": True,
-        "message": "Message deleted",
-        "data": MessageSerializer(message).data
-    }, status=status.HTTP_204_NO_CONTENT)
+    try:
+        message = get_object_or_404(Message, id=message_id)
+        message.delete()
+        return Response({
+            "status": True,
+            "message": "Message deleted",
+            "data": MessageSerializer(message).data
+        }, status=status.HTTP_204_NO_CONTENT)
+    except:
+        return Response({
+            "status": True,
+            "message": "Problem deleting message",
+            "data": None
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['DELETE'])
 @permission_classes([HasAPIKey])
 def delete_all(request):
-    Message.objects.all().delete()
-    return Response({
-        "status": True,
-        "message": "All Messages deleted",
-        "data": None
-    }, status=status.HTTP_204_NO_CONTENT)
+    try:
+        Message.objects.all().delete()
+        return Response({
+            "status": True,
+            "message": "All Messages deleted",
+            "data": None
+        }, status=status.HTTP_204_NO_CONTENT)
+    except:
+        return Response({
+            "status": True,
+            "message": "Problem deleting messages",
+            "data": None
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # exposed publically for testing purposes#
