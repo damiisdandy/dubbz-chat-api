@@ -18,6 +18,9 @@ pipenv install # or pip install -r requirements.txt
 # Starting application
 python manage.py migrate
 python manage.py runserver
+
+# Running tests
+python manage.py test
 ```
 
 > Note: The delete functionality works with API keys, to get your API key, run a GET request to `http://localhost:8000/api/message/api-key/generate` this is done for testing purposes, you can use the api_key gotten as a token to perform delete functionality.
